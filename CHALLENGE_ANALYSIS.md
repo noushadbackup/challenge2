@@ -43,8 +43,8 @@ says elsewhere that there is **no** intermediate Test set, and the Drive folder 
    court position to **0.000 cm median / 0.00 cm max** **(verified, IMG_0104)**. Moving the
    foot point up by just 5 % of the box height already gives ~29 cm error.
 2. **Team A = the team on offense at game start** (true for all 8 training rosters; the
-   tutorial also says "A = initial Offense"). That is how you decide which jersey colour is A
-   in the challenge videos.
+   tutorial also says "A = initial Offense"). Each team also wears a fixed bib colour in
+   every video, which gives A/B directly; see `analysis/DATA_ANALYSIS.md`.
 3. GT positions are **not clipped** to the court (x from −142 to 1628, y from −474 to 1260
    cm). Do not clamp predictions to the court rectangle.
 4. Some training frames have only 5 GT players (80 frames in IMG_0104, a player out of
