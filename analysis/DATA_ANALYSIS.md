@@ -84,7 +84,10 @@ Consequences:
 
 - **Team = bib colour.** A/B in the final videos follows from the roster plus the colour
   (IMG_0114: yellow = A, green = B; IMG_0115: purple = A, pink = B). The "A = initial
-  offense" rule agrees with this but is no longer needed.
+  offense" rule agrees with this but is no longer needed. *Rule note (organiser email):*
+  manual identity assignment is prohibited. The colour → team-group classifier must be
+  trained on the Training set and applied automatically. The A/B naming then comes from
+  the official roster. Do not hard-code it per Challenge video.
 - **The same 12 people play every game.** Each person appears in 4 training videos (about
   45k labelled frames each). A **12-class person classifier / ReID**, trained only on
   the Training set, is allowed and can identify players where jersey OCR is impossible.

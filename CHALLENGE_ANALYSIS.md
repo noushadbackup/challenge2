@@ -74,7 +74,8 @@ frame_id,court_x,court_y,team_id,jersey_number
 - team_id is `A` or `B`. (team, jersey) is the identity, so there is no track-id column.
 - Expect at most 6 rows per frame (one per roster identity).
 
-Deadlines (AoE, UTC−12):
+Deadlines (AoE, UTC−12; confirmed by the organisers' email):
+- **Team registration**: **Oct 27, 2026**, via the Google Form on the site.
 - **Results**: Nov 3, 2026, via Google Form (link to be announced).
 - **Paper (8–12 pages) + code ZIP + weights**: Nov 10, 2026, via CMT.
 
@@ -137,7 +138,10 @@ Expect noticeably lower results on the 720p oblique challenge view.
 - **Manual court landmark selection is allowed** (describe it in the paper). You can add
   more landmarks than the 4 corners, such as free-throw line, arc, or hoop base, for a
   better homography. **No manual per-frame annotation or correction** of boxes, tracks,
-  teams, or jerseys.
+  teams, or jerseys. The organisers' email adds **no manual identity assignment**. Any
+  bib-colour → team or appearance → player mapping must therefore be *learned from the
+  Training set* and applied automatically, not hand-coded per Challenge video.
+- Publicly available same-game GT trajectories must not be used to generate predictions.
 - Only one prediction submission. Code must reproduce it.
 
 ## 6. Pipeline sketch and where the points are
@@ -154,8 +158,9 @@ Expect noticeably lower results on the 720p oblique challenge view.
 4. **Tracking**: ByteTrack/BoT-SORT/OC-SORT, with the knowledge that there are always
    exactly 6 players. Use global offline association (tracklet stitching), because the
    whole video is available.
-5. **Team classification**: cluster torso colour into 2 teams per video, then name them
-   A/B by "offense at game start".
+5. **Team classification**: use a bib-colour classifier trained on the Training set (each
+   team wears a fixed colour; see `analysis/DATA_ANALYSIS.md`), combined with the official
+   roster. "Offense at game start" is an automatic cross-check.
 6. **Jersey OCR**: 720p crops are tiny. Use tracklet-level voting, the roster constraint
    (only 3 valid numbers per team), and a Hungarian assignment of tracklets to the 6
    identities with a temporal non-overlap constraint.
@@ -164,11 +169,26 @@ Expect noticeably lower results on the 720p oblique challenge view.
 8. **Local validation**: run on training videos downscaled to 720p with the official
    TI-HOTA code. Note that this still differs in viewpoint from the final videos.
 
-## 7. Open questions worth emailing the organisers about (abc2027@autocare.ai, subject "ABC Challenge")
+## 7. Organiser email (Oct 2026): what it confirmed
+
+- Deadlines: registration Oct 27, results Nov 3, paper Nov 10 (all AoE).
+- Two sets only (Training + Challenge), one submission, and all frames scored, including
+  pre-game frames.
+- The 5-column format above is **official** and supersedes the earlier proposal. Positions
+  are in cm, not metres.
+- TI-AssA = **unweighted mean over GT identities**, as in the public code (not Eq. 5 of
+  the paper). `analysis/analyze_training.py` already implements it this way and matches
+  the official notebook exactly.
+- Data-use rules are unchanged in substance, with the added "no manual identity assignment".
+- Keep the exact Nov 3 code, weights, and config. CMT upload details will follow.
+- The "LOPDO evaluation" text on the site does not apply. Cite the TrackID3x3 paper.
+- New contact: **trackid3x3-challenge-2026@g.sp.m.is.nagoya-u.ac.jp**
+
+## 8. Still-open questions for the organisers
 
 - How are the per-video scores aggregated: mean of the two videos, or pooled frames?
 - How is the challenge GT time-aligned to the oblique video frames, and does it cover every
-  frame of the MP4 (11 536 / 11 823)?
+  frame of the MP4 (11 536 / 11 823)? Are predictions on frames without GT counted as FP?
 - Is the challenge GT position the top-view bbox bottom-centre (as in training)?
-- When the official form is published, does it expect the exact 5-column format above? The
-  public eval notebook reads `frame, id, x, y, attr`.
+- Is a bib-colour/person classifier trained on the Training set and applied automatically
+  OK? We read it as allowed. It relies on the same 12 players wearing fixed bib colours.
